@@ -1,0 +1,30 @@
+
+//单图，较清晰
+File fileTemp = new File(filePath);
+if (fileTemp.exists()) {
+BitmapFactory.Options options = new BitmapFactory.Options();
+options.inSampleSize = 2;//图片宽高都为原来的二分之一，即图片为原来的四分之一
+Bitmap bm = BitmapFactory.decodeFile(filePath);
+	        	}
+
+//多图，省内存
+Uri imageFilePath = Uri.fromFile(new File(listfile.get(i)));
+		        	BitmapFactory.Options op = new BitmapFactory.Options();
+		        	//获取图片尺寸
+		        	op.inJustDecodeBounds = true;
+		        	Bitmap picture = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageFilePath),  
+		                    null, op);
+		            
+		            int wRatio = (int) Math.ceil(op.outWidth / (float) 200); //计算宽度比例  
+		            int hRatio = (int) Math.ceil(op.outHeight / (float) 200); //计算高度比例
+		            if (wRatio > 1 && hRatio > 1) {  
+		                if (wRatio > hRatio) {  
+		                    op.inSampleSize = wRatio;  
+		                } else {  
+		                    op.inSampleSize = hRatio;  
+		                }  
+		            }  
+		            //获取图片
+					op.inJustDecodeBounds = false;
+					picture = BitmapFactory.decodeStream(getContentResolver()  
+					        .openInputStream(imageFilePath), null, op);

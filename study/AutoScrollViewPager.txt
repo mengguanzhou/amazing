@@ -1,0 +1,345 @@
+public class AutoScrollViewPager extends ViewPager {
+/**定义页面点击事件*/
+public interface OnPageItemClickListener {
+void onPageItemClickListener(T pd);
+}
+/**滑动时间间距*/
+private int mScrollTime = 0;
+/**之前位置*/
+private int oldIndex = 0;
+/**当前页面位置*/
+private int curIndex = 0;
+/**图片数据集合*/
+private List mPagerData = new ArrayList();
+/**适配器*/
+private PagerAdapter pagerAdapter;
+/**图片下面指示小圆点所在布局*/
+private LinearLayout indicatorView;
+/**小圆点状态图片resId*/
+private int focusedDrawable, normalDrawable;
+private LayoutInflater inflater;
+private OnPageItemClickListener pageItemClickListener;
+/**是否是假的循环*/
+private boolean isFakeCycle = false;
+/**是否开始滚动*/
+private boolean isStartScroll;
+/**页面改变监听*/
+private PageChangedCallBack mCallBack;
+public interface PageChangedCallBack{
+void onPageChange(int position);
+}
+
+
+public AutoScrollViewPager(Context context, AttributeSet attrs) {
+super(context, attrs);
+inflater = LayoutInflater.from(context);
+focusedDrawable = R.drawable.common_dot_selected;
+normalDrawable = R.drawable.common_dot_normal;
+
+
+setInternalPageChangeListener(new OnPageChangeListener() {
+public void onPageSelected(int i) {
+if(mCallBack!=null)
+mCallBack.onPageChange(i);
+if (mPagerData.isEmpty() || indicatorView == null || indicatorView.getChildCount() == 0)
+return;
+curIndex = i % mPagerData.size();
+/**取消圆点选中*/
+indicatorView.getChildAt(oldIndex).setBackgroundResource(normalDrawable);
+/**圆点选中*/
+indicatorView.getChildAt(curIndex).setBackgroundResource(focusedDrawable);
+oldIndex = curIndex;
+}
+
+
+public void onPageScrolled(int arg0, float arg1, int arg2) {
+}
+
+
+public void onPageScrollStateChanged(int arg0) {
+}
+});
+
+
+/**设置滑动动画时间 ,如果用默认动画时间可不用 ,反射技术实现*/
+new FixedSpeedScroller(getContext()).setDuration(this, 700);
+
+
+pagerAdapter = new MyPagerAdapter();
+setAdapter(pagerAdapter);
+/**设置预加载数据量，自己设定*/
+setOffscreenPageLimit(2);
+/**用requestDisallowInterceptTouchEvent()方法防止viewpager和子view冲突*/
+requestDisallowInterceptTouchEvent(true);
+
+options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.index_advert_default) /**加载过程中默认显示图片*/
+.showImageForEmptyUri(R.drawable.index_advert_default) /**图片url为空果默认显示图片*/
+.showImageOnFail(R.drawable.index_advert_default) /**加载错误时默认显示图片*/
+.resetViewBeforeLoading(false).build();
+}
+
+public void setPageChangeCallback(PageChangedCallBack clallBack){
+mCallBack=clallBack;
+}
+
+@Override
+protected void onAttachedToWindow() {
+super.onAttachedToWindow();
+if(isStartScroll){
+start(mScrollTime);
+}
+}
+
+@Override
+protected void onDetachedFromWindow() {
+super.onDetachedFromWindow();
+if(isStartScroll)
+handler.removeCallbacksAndMessages(null);
+}
+
+
+/** 构建内部索引父view */
+private void initInnerIndicator() {
+indicatorView = new IndicatorView(getContext());
+indicatorView.setGravity(Gravity.CENTER);
+indicatorView.setBackgroundColor(0x0fFF00FF);
+indicatorView.setOrientation(LinearLayout.HORIZONTAL);
+LayoutParams params = new LayoutParams();
+params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+params.height = 40;
+params.gravity = Gravity.BOTTOM;
+addView(indicatorView, params);
+}
+
+
+public void setDatas(List imgUrls, LinearLayout outIndicator, boolean needInnerIndicator, boolean isFakeCycle) {
+this.isFakeCycle = isFakeCycle;
+setDatas(imgUrls, outIndicator, needInnerIndicator);
+}
+
+/**重复调用可能会anr*/
+public void setDatas(List imgUrls, LinearLayout outIndicator, boolean needInnerIndicator) {
+if (outIndicator != null) {
+indicatorView = outIndicator;
+}
+else if (needInnerIndicator) {
+initInnerIndicator();
+}
+mPagerData.clear();
+mPagerData.addAll(imgUrls);
+pagerAdapter.notifyDataSetChanged();
+}
+
+/**重新加载图片数据，刷新vp内容*/
+public void refreshDatas(List imgUrls, LinearLayout outIndicator, boolean needInnerIndicator,boolean isFakeCycle) {
+this.isFakeCycle = isFakeCycle;
+if (outIndicator != null) {
+indicatorView = outIndicator;
+}
+else if (needInnerIndicator) {
+initInnerIndicator();
+}
+mPagerData.clear();
+mPagerData.addAll(imgUrls);
+pagerAdapter = new MyPagerAdapter();
+setAdapter(pagerAdapter);
+pagerAdapter.notifyDataSetChanged();
+}
+
+
+@Override
+void dataSetChanged() {
+super.dataSetChanged();
+setUpIndicator();
+}
+
+
+/**设置圆点*/
+private void setUpIndicator() {
+if (indicatorView != null) {
+indicatorView.removeAllViews();
+if (mPagerData.isEmpty()) {
+indicatorView.setVisibility(View.GONE);
+return;
+}
+else {
+indicatorView.setVisibility(View.VISIBLE);
+}
+for (int i = 0; i < mPagerData.size(); i++) {
+View v = inflater.inflate(R.layout.auto_scrollpage_dot, indicatorView, false);
+v.setBackgroundResource(normalDrawable);
+indicatorView.addView(v);
+}
+indicatorView.getChildAt(0).setBackgroundResource(focusedDrawable);
+}
+curIndex = oldIndex = 0;
+if (mPagerData.size() > 1 && isFakeCycle) {
+setCurrentItem(15 - 15 % mPagerData.size());
+}
+else {
+setCurrentItem(0);
+}
+}
+
+
+/** 获取真实的当前位置 */
+public int getCurrentPosition() {
+return curIndex;
+}
+
+
+/** 获取真实的当前位置的数据 */
+public T getCurrentData() throws IndexOutOfBoundsException {
+return mPagerData.get(curIndex);
+}
+
+
+@Override
+public boolean onInterceptTouchEvent(MotionEvent ev) {
+if (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL) {
+start();
+}
+else {
+handler.removeCallbacksAndMessages(null);
+}
+return super.onInterceptTouchEvent(ev);
+}
+
+
+@Override
+public boolean onTouchEvent(MotionEvent ev) {
+if (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL) {
+start();
+}
+else {
+handler.removeCallbacksAndMessages(null);
+}
+return super.onTouchEvent(ev);
+}
+
+
+/** 开始广告滚动 */
+private void start() {
+start(mScrollTime);
+}
+
+
+public void start(int scrollTime) {
+mScrollTime = scrollTime;
+isStartScroll = false;
+if (mScrollTime > 0 && !mPagerData.isEmpty()) {
+isStartScroll = true;
+handler.sendMessageDelayed(handler.obtainMessage(), mScrollTime);
+}
+}
+
+
+private Handler handler = new Handler() {
+public void handleMessage(android.os.Message msg) {
+handler.removeCallbacksAndMessages(null);
+if(isFakeCycle){
+setCurrentItem(getCurrentItem() + 1);
+}else{
+if(getCurrentItem() == mPagerData.size()-1){
+setCurrentItem(0, true);
+}else{
+setCurrentItem(getCurrentItem() + 1);
+}
+}
+handler.sendMessageDelayed(handler.obtainMessage(), mScrollTime);
+};
+};
+/**加载网络图片，用到了Universal-Image-Loader开源框架*/
+private DisplayImageOptions options;
+
+public void setImageOptions(DisplayImageOptions options){
+this.options=options;
+}
+
+
+/**ViewPager适配器*/
+private class MyPagerAdapter extends PagerAdapter {
+
+
+@Override
+public int getCount() {
+if (mPagerData.size() == 1) {
+return 1;
+}
+else if (mPagerData.size() > 1) {
+return isFakeCycle ? Integer.MAX_VALUE : mPagerData.size();
+}
+return 0;
+}
+
+@Override
+public Object instantiateItem(ViewGroup container, int position) {
+final int realP = position % mPagerData.size();
+final ImageView netImgView = (ImageView) inflater.inflate(R.layout.auto_scrollpage_img, container, false);
+ImageLoader.getInstance().displayImage(mPagerData.get(realP).getImageUrl(), netImgView, options);
+netImgView.setOnClickListener(new View.OnClickListener() {
+
+
+@Override
+public void onClick(View v) {
+if (pageItemClickListener != null) {
+pageItemClickListener.onPageItemClickListener(mPagerData.get(realP));
+}
+}
+});
+
+
+container.addView(netImgView);
+return netImgView;
+}
+
+
+@Override
+public void destroyItem(ViewGroup container, int position, Object object) {
+if (object instanceof View) {
+container.removeView((View) object);
+}
+}
+
+
+@Override
+public boolean isViewFromObject(View view, Object object) {
+return view == object;
+}
+}
+
+
+/** 设置显示条目的点击事件 */
+public void setOnPageItemClickListener(OnPageItemClickListener pageItemClickListener) {
+this.pageItemClickListener = pageItemClickListener;
+}
+}
+
+-----------------内部数据模型，根据需要添加-----------------------------------------
+
+
+public interface PagerImageData{
+public String getImageUrl();/**用于显示网络图片*/
+public void setImageUrl(String imgUrl);
+}
+
+--------------------在Activity中使用AutoScrollViewPager--------------------------------------------------------
+
+/**图片展示，ImageBean是项目中用到的请求服务器json数据的实体bean(要继承PagerImageData) */
+private AutoScrollViewPager advertiseVp;
+
+advertiseVp = (AutoScrollViewPager) findViewById(R.id.luck_detail_Vp);
+
+advertiseVp.setOnPageItemClickListener(new OnPageItemClickListener() {
+@Override
+public void onPageItemClickListener(ImageBean pd) {
+//页面点击事件，做想做的效果（查看大图，跳转到其它地方等）
+}
+});
+
+/**添加数据imageArray是从服务器取得的图片url集合，也可以自己准备好List imageArray=new ArrayList(),往里面加想要的数据*/
+
+advertiseVp.refreshDatas(imageArray, (LinearLayout) findViewById(R.id.luck_detail_adv_dotLl), false, true);
+advertiseVp.start(3000);
+
+Activity中的代码没有写全，有时间把项目中用到的整理成个demo上传上去，注意文章中两处红色的地方，我在代码中简写了。
