@@ -1,0 +1,65 @@
+
+    // 点击了触摸屏，但是没有移动和弹起的动作onShowPress和onDown的区别在于 onDown是，  
+    // 一旦触摸屏按下，就马上产生onDown事件，但是onShowPress是onDown事件产生后，  
+    // 一段时间内，如果没有移动鼠标和弹起事件，就认为是onShowPress事件。  
+    @Override  
+    public void onShowPress(MotionEvent e) {  
+    }  
+  
+    // 轻击触摸屏后，弹起。如果这个过程中产onLongPress、onScroll和onFling事件，  
+    // 就不会 产生onSingleTapUp事件。  
+    @Override  
+    public boolean onSingleTapUp(MotionEvent e) {  
+        return false;  
+    }  
+  
+    // 当手在屏幕上滑动离开屏幕时触发，参数跟onFling一样（注意两者的区别）  
+    @Override  
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,  
+            float distanceY) {  
+        return false;  
+    }  
+  
+    // 长按屏幕时触发  
+    @Override  
+    public void onLongPress(MotionEvent e) {  
+    }  
+      
+    // 当手在屏幕上滑动但手未离开屏幕时触发  
+    @Override  
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,  
+            float velocityY) {  
+        float x = 0;  
+        x = e2.getX() - e1.getX();  
+        //float y = e2.getY() - e1.getY();  
+  
+        if (x > 0)   
+        {  
+            doResult(RIGHT);  
+        }  
+        else if (x < 0)   
+        {  
+            doResult(LEFT);  
+        }  
+        return true;  
+    }  
+  
+    private void doResult(int action)   
+    {  
+        DatabaseHelper helper = new DatabaseHelper(SlideWindow.this);  
+        SQLiteDatabase db = helper.getReadableDatabase();  
+        Cursor cursor = db.rawQuery("select * from dict", null);  
+        if(cursor.moveToFirst())  
+        {//这里的if防止数据库中没数据的时候的滑动屏幕造成强退  
+            switch (action)   
+            {  
+                case RIGHT:  
+                {     
+                 //向右滑时你要干的事  
+                }  
+                  
+                case LEFT:  
+                {     
+                //向左滑是你要做的事  
+                }  
+            }  
