@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="word_gray">#877a7a</color>
+    <color name="gray">#AAAAAA</color>
+    <color name="red">#FF0000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="divide_line">#cccccc</color>
+    <color name="bg_gray">#EEEEEE</color>
+    <color name="black">#000000</color>
+    <color name="green">#00CC00</color>
+    <color name="originGreen">#35A342</color>
+    <color name="bg_black">#AA000000</color>
+    <color name="def_gray">#939498</color>
+    <color name="grass_green">#3CA648</color>
+    <color name="text_green">#299E36</color>
+    <color name="font_gray">#99AAAAAA</color>
+    <color name="hint_gray">#DBDBDB</color>
+    <color name="viewfinder_frame">#ff000000</color>
+    <color name="viewfinder_laser">#ffff0000</color>
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="result_view">#b0000000</color>
+    <color name="possible_result_points">#c0ffff00</color>
+    <color name="coupon_1">#5ACF68</color>
+    <color name="coupon_2">#9ECCF4</color>
+    <color name="coupon_3">#F97E5D</color>
+    <color name="word_gray_c3c3c3">#c3c3c3</color>
+    <color name="word_gray_8e8e8e">#8e8e8e</color>
+    <color name="word_black_333333">#333333</color>
+    <color name="word_orgin">#FD6C00</color>
+    <color name="wallet_circle">#35A342</color>
+    <color name="orange">#ff9933</color>
+
+</resources>
