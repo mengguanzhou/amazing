@@ -52,9 +52,11 @@ public final class R {
         public static final int barcode_list=0x7f060010;
         public static final int button_capture=0x7f06000e;
         public static final int button_upload=0x7f06000f;
+        public static final int cancel=0x7f060017;
         public static final int decode=0x7f060001;
         public static final int decode_failed=0x7f060002;
         public static final int decode_succeeded=0x7f060003;
+        public static final int delete=0x7f060016;
         public static final int dialog_cancle=0x7f060013;
         public static final int dialog_delete=0x7f060012;
         public static final int encode_failed=0x7f060004;
@@ -76,6 +78,7 @@ public final class R {
         public static final int activity_upload_affirm=0x7f030002;
         public static final int dialog_delete=0x7f030003;
         public static final int item_barcode_list=0x7f030004;
+        public static final int photo_choose_dialog=0x7f030005;
     }
     public static final class raw {
         public static final int beep=0x7f040000;
