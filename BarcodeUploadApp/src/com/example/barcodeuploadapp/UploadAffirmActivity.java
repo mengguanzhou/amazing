@@ -103,38 +103,7 @@ public class UploadAffirmActivity extends Activity{
 		});
 		
 		this.registerForContextMenu(barcodeList);
-		/*barcodeList.setOnItemLongClickListener(new OnItemLongClickListener() {
-			
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
-					long id){
-				final AlertDialog dialog = new AlertDialog.Builder
-						(UploadAffirmActivity.this).create();
-				dialog.show();
-				Window window = dialog.getWindow();
-				window.setContentView(R.layout.dialog_delete);
-				View delete =  window.findViewById(R.id.dialog_delete);
-				View cancle =  window.findViewById(R.id.dialog_cancle);
-				delete.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						db.delete("tb_barcode", "id=?", new String[]{});
-						dialog.dismiss();
-						Toast.makeText(getApplicationContext(), "É¾³ý³É¹¦", 0).show();
-						db.close();
-					}
-				});
-				cancle.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						dialog.dismiss();
-					}
-				});
-				return true;
-			}
-		});*/
+		
 		
 	}
 	
