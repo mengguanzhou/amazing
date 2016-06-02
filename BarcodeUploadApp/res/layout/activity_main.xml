@@ -17,15 +17,6 @@
         android:layout_height="wrap_content"
         android:text="上传"/>
     
-    <EditText
-        android:id="@+id/edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    
-    <Button
-        android:id="@+id/add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="添加"/>
+   
 
 </LinearLayout>

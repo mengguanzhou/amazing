@@ -23,9 +23,9 @@ import android.widget.Toast;
 public class ListenNetWorkStateService extends Service {
 	private final static String TAG = "ListenStateService";
 	private final static String CHANGE_MESSAGE = "android.net.conn.CONNECTIVITY_CHANGE";
-	private final static String NO_NETWORK = "褰撳墠娌℃湁娲诲姩缃戠粶";
-	private final static String CONNECTED_NETWORK = "宸茶繛鎺?";
-	private final static String DISCONNECTED_NETWORK = "宸叉柇寮?";
+	private final static String NO_NETWORK = "当前没有活动网络";
+	private final static String CONNECTED_NETWORK = "已连接";
+	private final static String DISCONNECTED_NETWORK = "已断开";
 
 	private ConnectivityManager manager;
 	private NetworkInfo info;
@@ -37,26 +37,26 @@ public class ListenNetWorkStateService extends Service {
 			Log.e(TAG, "receive a broadcast");
 			String action = intent.getAction();
 			if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-				// 缃戠粶鐘舵?佸彂鐢熸敼鍙?
+				// 网络状态发生改变
 				manager = (ConnectivityManager) context
 						.getSystemService(CONNECTIVITY_SERVICE);
 				info = manager.getActiveNetworkInfo();
 
 				if (info != null && info.isAvailable()) {
-					// 缃戠粶鍚嶇О
+					// 网络名称
 					String name = info.getTypeName();
 					State state = info.getState();
 
-					Log.e(TAG, "銆愮綉缁滃悕绉般??:" + name + "銆愮姸鎬併??" + state.toString());
+					Log.e(TAG, "【网络名称】:" + name + "【状态】" + state.toString());
 					Toast.makeText(
 							context,
-							(name.equals("mobile") ? "绉诲姩鏁版嵁" : name)
+							(name.equals("mobile") ? "移动数据" : name)
 									+ " "
 									+ (state.toString().equals("CONNECTED") ? CONNECTED_NETWORK
 											: DISCONNECTED_NETWORK),
 							Toast.LENGTH_SHORT).show();
 				} else if (info == null) {
-					// 褰撳墠娌℃湁娲诲姩缃戠粶
+					// 当前没有活动网络
 					Toast.makeText(context, NO_NETWORK, Toast.LENGTH_SHORT)
 							.show();
 				}
