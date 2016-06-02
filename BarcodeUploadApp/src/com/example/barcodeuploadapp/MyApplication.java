@@ -42,9 +42,9 @@ public class MyApplication extends Application {
 		// 初始化网络请求队列
 		NetworkManager.getInstance().init(getApplicationContext());
 		// 初始化网络请求参数
-		Constants.URL = "http://112.124.3.197:8011/app/method/app_bound.php";
+		Constants.URL = "http://www.bailuyuandayingtao.com/app/app_bound.php";
 		Constants.APPKEY = "888";
-		Constants.SECRET = "753159842564855248546518489789";
+		Constants.SECRET = "bashangnongpinbailuyuandayingtao";
 		// 初始化Log打印默认的TAG
 		LogUtil.TAG = "";
 		// 初始化Log打印的等级

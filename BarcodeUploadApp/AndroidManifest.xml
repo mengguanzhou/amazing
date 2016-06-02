@@ -34,6 +34,16 @@
             android:screenOrientation="portrait" 
             android:launchMode="singleTop">
         </activity>
+        
+        <receiver
+            android:name=".Broadcast.ScanBroadcastReceiver"
+            android:exported="false" android:singleUser="true">
+            <intent-filter>
+                <action android:name="com.barcode_2d.scan" 
+            android:launchMode="singleTop"/>
+            </intent-filter>
+        </receiver>
     </application>
 
+    
 </manifest>

@@ -186,7 +186,7 @@ public class CaptureActivity extends Activity implements Callback {
 		data.putExtra("type", obj.getBarcodeFormat().toString());
 		data.putExtra("barcode", obj.getText());
 		if(type != ViewfinderView.LOGISTICS){
-			data.setAction("com.wiipu.shopping.scan");
+			data.setAction("com.barcode_2d.scan");
 			sendBroadcast(data);
 		}
 		else{
