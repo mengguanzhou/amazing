@@ -74,6 +74,7 @@ public class UploadAffirmActivity extends Activity{
 					}
 				}
 				barcodes = builder.toString();
+				System.out.println(barcodes);
 				
 				BarcodeUploadRequest request = new BarcodeUploadRequest();
 				request.setBarcode(barcodes);
