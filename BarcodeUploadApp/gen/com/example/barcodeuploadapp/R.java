@@ -45,13 +45,14 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int add=0x7f060011;
         /**  Messages IDs 
          */
         public static final int auto_focus=0x7f060000;
         public static final int barcode=0x7f060016;
-        public static final int barcode_list=0x7f060012;
+        public static final int barcode_list=0x7f060011;
         public static final int button_capture=0x7f06000e;
+        public static final int button_clear=0x7f060012;
+        public static final int button_scan_frequently=0x7f060010;
         public static final int button_upload=0x7f06000f;
         public static final int cancel=0x7f060019;
         public static final int decode=0x7f060001;
@@ -60,7 +61,6 @@ public final class R {
         public static final int delete=0x7f060018;
         public static final int dialog_cancle=0x7f060015;
         public static final int dialog_delete=0x7f060014;
-        public static final int edittext=0x7f060010;
         public static final int encode_failed=0x7f060004;
         public static final int encode_succeeded=0x7f060005;
         public static final int launch_product_query=0x7f060006;

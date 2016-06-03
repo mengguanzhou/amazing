@@ -1,33 +1,20 @@
 package com.example.barcodeuploadapp;
 
-import java.util.Map;
-
 import sqlite.DbHelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -40,22 +27,25 @@ import com.wiipu.network.beans.ResponseHook;
 
 public class UploadAffirmActivity extends Activity{
 	private Button uploadAffirm;
+	private Button clear;
 	private ListView barcodeList;
 	private SQLiteDatabase db;
 	private DbHelper dbhelper;
 	private SimpleCursorAdapter adapter;
+	private Cursor cursor;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_upload_affirm);
 		uploadAffirm = (Button) findViewById(R.id.upload_affirm);
+		clear = (Button) findViewById(R.id.button_clear);
 		barcodeList = (ListView) findViewById(R.id.barcode_list);
 		
 		dbhelper = new DbHelper(this, "db_bwl", null, 1);
 		db = dbhelper.getReadableDatabase();
 		
-		Cursor cursor = db.query("tb_barcode", new String[]{"id as _id","barcode","time"}, null, null, null, null,null);
+		cursor = db.query("tb_barcode", new String[]{"id as _id","barcode","time"}, null, null, null, null,null);
 		
 		adapter = new SimpleCursorAdapter(this, R.layout.item_barcode_list, cursor, 
 				new String[]{"barcode","time"}, 
@@ -84,7 +74,6 @@ public class UploadAffirmActivity extends Activity{
 					}
 				}
 				barcodes = builder.toString();
-				Toast.makeText(UploadAffirmActivity.this, barcodes, 0).show();
 				
 				BarcodeUploadRequest request = new BarcodeUploadRequest();
 				request.setBarcode(barcodes);
@@ -97,6 +86,8 @@ public class UploadAffirmActivity extends Activity{
 						if(response != null){
 							Toast.makeText(UploadAffirmActivity.this, "上传成功", 0).show();
 							db.execSQL("DELETE FROM tb_barcode");
+							cursor.requery();
+							adapter.notifyDataSetChanged();
 						}
 					}
 				}, new ErrorHook() {
@@ -108,6 +99,36 @@ public class UploadAffirmActivity extends Activity{
 				} , BarcodeUploadesponse.class);
 			}
 		});
+		
+		clear.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder dialog = new AlertDialog.Builder(UploadAffirmActivity.this);
+				dialog.setTitle("确认清空");
+				dialog.setMessage("您确认要清空列表吗？！");
+				dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						db.execSQL("DELETE FROM tb_barcode");
+						cursor.requery();
+						adapter.notifyDataSetChanged();
+					}
+				});
+				dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						dialog.dismiss();
+					}
+				});
+				
+				dialog.show();
+			}
+			});
 		
 		this.registerForContextMenu(barcodeList);
 		
@@ -141,10 +162,5 @@ public class UploadAffirmActivity extends Activity{
 		}
 		return true;
 	}
-		
-		
-	
-	
-	
 	
 }

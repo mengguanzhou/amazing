@@ -11,9 +11,15 @@
         android:layout_weight="1">
         </ListView>
     <Button
+        android:id="@+id/button_clear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="清空列表"/>
+    <Button
         android:id="@+id/upload_affirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="确认上传"/>
+    
 
 </LinearLayout>

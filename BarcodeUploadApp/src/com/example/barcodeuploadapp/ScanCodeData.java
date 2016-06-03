@@ -1,4 +1,4 @@
-package Broadcast;
+package com.example.barcodeuploadapp;
 
 public class ScanCodeData {
 

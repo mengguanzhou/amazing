@@ -21,8 +21,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	private Button upload,capture;
 	private int barcode_request = 0;
 	private DbHelper dbhelper;
-	private Button add;
-	private EditText edit;
+	private Button scanFrequently;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,53 +29,24 @@ public class MainActivity extends Activity implements OnClickListener{
         setContentView(R.layout.activity_main);
         upload = (Button) findViewById(R.id.button_upload);
         capture = (Button) findViewById(R.id.button_capture);
+        scanFrequently = (Button) findViewById(R.id.button_scan_frequently);
         capture.setOnClickListener(this);
         upload.setOnClickListener(this);
+        scanFrequently.setOnClickListener(this);
         dbhelper = new DbHelper(this, "db_bwl", null, 1);
-        add = (Button) findViewById(R.id.add);
-        add.setOnClickListener(this);
-        edit = (EditText) findViewById(R.id.edittext);
     }
 
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.button_capture:
-			CaptureActivity.startActivityForResult(this, ViewfinderView.LOGISTICS, barcode_request);
+			CaptureActivity.startActivityForResult(MainActivity.this, 2, barcode_request);
 			break;
 		case R.id.button_upload:
 			startActivity(new Intent(MainActivity.this,UploadAffirmActivity.class));
 			break;
-		case R.id.add:
-			String barcode = new String();
-			barcode = edit.getText().toString();
-
-			SQLiteDatabase db = dbhelper.getWritableDatabase();
-			ContentValues value = new ContentValues();
-			
-			Calendar c = Calendar.getInstance();
-			int day = c.get(Calendar.DAY_OF_MONTH);
-			int month = c.get(Calendar.MONTH);
-			int hour = c.get(Calendar.HOUR_OF_DAY);
-			int minute = c.get(Calendar.MINUTE);
-			String hourOfDay = null;
-			String minuteOfHour = null;
-			if(hour < 10)
-				hourOfDay = "0" + hour;
-			else 
-				hourOfDay = hour + "";
-			if(minute < 10)
-				minuteOfHour = "0" + minute;
-			else 
-				minuteOfHour = minute + "";
-				
-			String time = hourOfDay + ":" + minuteOfHour + " " + day + "/" + month;
-
-			value.put("barcode", barcode);
-			value.put("time", time);
-			db.insert("tb_barcode", null, value);
-
-			Toast.makeText(this, barcode, Toast.LENGTH_SHORT).show();
+		case R.id.button_scan_frequently:
+			CaptureActivity.startActivity(MainActivity.this, 0);
 			break;
 		}
 	}
