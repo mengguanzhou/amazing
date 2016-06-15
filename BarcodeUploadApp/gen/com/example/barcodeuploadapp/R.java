@@ -43,22 +43,25 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
+        public static final int ic_launcher_bashang=0x7f020001;
     }
     public static final class id {
         /**  Messages IDs 
          */
         public static final int auto_focus=0x7f060000;
-        public static final int barcode=0x7f060014;
-        public static final int barcode_list=0x7f060010;
+        public static final int barcode=0x7f060016;
+        public static final int barcode_list=0x7f060011;
         public static final int button_capture=0x7f06000e;
+        public static final int button_clear=0x7f060012;
+        public static final int button_scan_frequently=0x7f060010;
         public static final int button_upload=0x7f06000f;
-        public static final int cancel=0x7f060017;
+        public static final int cancel=0x7f060019;
         public static final int decode=0x7f060001;
         public static final int decode_failed=0x7f060002;
         public static final int decode_succeeded=0x7f060003;
-        public static final int delete=0x7f060016;
-        public static final int dialog_cancle=0x7f060013;
-        public static final int dialog_delete=0x7f060012;
+        public static final int delete=0x7f060018;
+        public static final int dialog_cancle=0x7f060015;
+        public static final int dialog_delete=0x7f060014;
         public static final int encode_failed=0x7f060004;
         public static final int encode_succeeded=0x7f060005;
         public static final int launch_product_query=0x7f060006;
@@ -68,8 +71,8 @@ public final class R {
         public static final int return_scan_result=0x7f060009;
         public static final int search_book_contents_failed=0x7f06000a;
         public static final int search_book_contents_succeeded=0x7f06000b;
-        public static final int time=0x7f060015;
-        public static final int upload_affirm=0x7f060011;
+        public static final int time=0x7f060017;
+        public static final int upload_affirm=0x7f060013;
         public static final int viewfinder_view=0x7f06000d;
     }
     public static final class layout {

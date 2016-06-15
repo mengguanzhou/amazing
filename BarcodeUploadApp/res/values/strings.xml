@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BarcodeUploadApp</string>
+    <string name="app_name">灞上农品发货</string>
     <string name="hello_world">Hello world!</string>
     <string name="barcode_text">请将条形码放在取景器内</string>
 </resources>

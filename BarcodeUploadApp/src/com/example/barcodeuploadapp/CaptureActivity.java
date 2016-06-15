@@ -2,13 +2,17 @@ package com.example.barcodeuploadapp;
 
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Vector;
 
+import sqlite.DbHelper;
 import Util.StatusBarUtil;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -19,6 +23,7 @@ import android.os.Vibrator;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -45,8 +50,9 @@ public class CaptureActivity extends Activity implements Callback {
 	private boolean playBeep;
 	private static final float BEEP_VOLUME = 0.10f;
 	private boolean vibrate;
+	private boolean continueScan = false;
 	//扫描的类型，二维码或者是条形码
-	private int type;
+	private int type = 2;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -181,21 +187,68 @@ public class CaptureActivity extends Activity implements Callback {
 		viewfinderView.drawResultBitmap(barcode);
 		playBeepSoundAndVibrate();
 		
-		
 		Intent data = new Intent();
 		data.putExtra("type", obj.getBarcodeFormat().toString());
 		data.putExtra("barcode", obj.getText());
-		if(type != ViewfinderView.LOGISTICS){
-			data.setAction("com.barcode_2d.scan");
-			sendBroadcast(data);
+		System.out.println(type);
+		if(type != 2){
+
+			DbHelper dbhelper = new DbHelper(this, "db_bwl", null, 1);
+			SQLiteDatabase db = dbhelper.getWritableDatabase();
+			ContentValues value = new ContentValues();
+			
+			Calendar c = Calendar.getInstance();
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			int month = c.get(Calendar.MONTH);
+			int hour = c.get(Calendar.HOUR_OF_DAY);
+			int minute = c.get(Calendar.MINUTE);
+			String hourOfDay = null;
+			String minuteOfHour = null;
+			if(hour < 10)
+				hourOfDay = "0" + hour;
+			else 
+				hourOfDay = hour + "";
+			if(minute < 10)
+				minuteOfHour = "0" + minute;
+			else 
+				minuteOfHour = minute + "";
+				
+			String time = hourOfDay + ":" + minuteOfHour + " " + day + "/" + month;
+
+			value.put("barcode", obj.getText());
+			value.put("time", time);
+			db.insert("tb_barcode", null, value);
+
+			Toast.makeText(this, obj.getText(), Toast.LENGTH_SHORT).show();
+			
+			SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+			SurfaceHolder surfaceHolder = surfaceView.getHolder();
+			if (hasSurface) {
+				initCamera(surfaceHolder);
+			} else {
+				surfaceHolder.addCallback(this);
+				surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+			}
+			
+			new Handler().postDelayed(new Runnable(){    
+				public void run() {    
+					//execute the task 
+
+					if (handler != null)
+
+						handler.restartPreviewAndDecode();
+				}    
+			}, 1500);   
 		}
 		else{
 			//物流扫码\
 			setResult(RESULT_OK, data);	
+			
+
+			finish();
 		}
 		
 		
-		finish();
 	}
 
 	private void initBeepSound() {
