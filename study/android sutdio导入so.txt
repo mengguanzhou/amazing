@@ -1,0 +1,6 @@
+ÔÚgradle.buildth  androidÌí¼Ó
+sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }

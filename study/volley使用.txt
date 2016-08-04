@@ -1,0 +1,35 @@
+StringRequest用法
+
+GET请求
+1.申请RequestQueue
+RequestQueue mQueue = Volley.newRequestQueue(context);  
+2.创建StringRequest对象
+StringRequest stringRequest = new StringRequest("http://www.baidu.com",  
+                        new Response.Listener<String>() {  
+                            @Override  
+                            public void onResponse(String response) {  
+                                Log.d("TAG", response);  
+                            }  
+                        }, new Response.ErrorListener() {  
+                            @Override  
+                            public void onErrorResponse(VolleyError error) {  
+                                Log.e("TAG", error.getMessage(), error);  
+                            }  
+                        });  
+3.
+mQueue.add(stringRequest);  
+
+POST请求
+
+JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://m.weather.com.cn/data/101010100.html", null,  
+        new Response.Listener<JSONObject>() {  
+            @Override  
+            public void onResponse(JSONObject response) {  
+                Log.d("TAG", response.toString());  
+            }  
+        }, new Response.ErrorListener() {  
+            @Override  
+            public void onErrorResponse(VolleyError error) {  
+                Log.e("TAG", error.getMessage(), error);  
+            }  
+        });  

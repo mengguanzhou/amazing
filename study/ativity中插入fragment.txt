@@ -1,0 +1,9 @@
+		//新建FragmentTransaction对象，获取实例
+            FragmentTransaction ft = getFragmentManager()
+                    .beginTransaction();
+		//新建一个想要插入的fragment
+            SendDanmuFragment fragment = new SendDanmuFragment();
+
+		//将fragment加入ft,第一个参数为fragment在activity中的布局
+            ft.add(R.id.activity_zhibo_frame_send, fragment);
+            ft.commit();
